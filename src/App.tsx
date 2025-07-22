@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import './App.css';
+import { Button } from '@shadcn/ui';
+import { Input } from '@shadcn/ui';
 
 const buttons: string[][] = [
   ['7', '8', '9', '/'],
@@ -15,8 +17,7 @@ const App: React.FC = () => {
 
   const handleClick = (value: string) => {
     if (value === 'C') {
-      setInput('');
-      setResult(null);
+      clearInputs();
     } else if (value === '=') {
       try {
         // eslint-disable-next-line no-eval
@@ -31,18 +32,24 @@ const App: React.FC = () => {
     }
   };
 
+  const clearInputs = () => {
+    console.log("🤗");
+    setInput('');
+    setResult(null);
+  };
+
   return (
     <div className="calculator-container">
       <h2>React Calculator</h2>
       <div className="display">
-        <input type="text" value={input} readOnly className="calc-input" />
+        <Input type="text" value={input} readOnly className="calc-input" />
         <div className="calc-result">{result !== null ? result : ''}</div>
       </div>
       <div className="button-grid">
         {buttons.map((row, i) => (
           <div key={i} className="button-row">
             {row.map((btn) => (
-              <button key={btn} onClick={() => handleClick(btn)}>{btn}</button>
+              <Button key={btn} onClick={() => handleClick(btn)}>{btn}</Button>
             ))}
           </div>
         ))}
