@@ -33,7 +33,7 @@ const App: React.FC = () => {
 
   return (
     <div className="calculator-container">
-      <h2>React Calculator</h2>
+      <h2>My Calculator</h2>
       <div className="display">
         <input type="text" value={input} readOnly className="calc-input" />
         <div className="calc-result">{result !== null ? result : ''}</div>
