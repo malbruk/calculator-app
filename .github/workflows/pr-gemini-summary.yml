@@ -34,7 +34,7 @@ jobs:
 
       - name: Summarize diff using Gemini
         run: |
-          cat changes.diff | gemini --model="gemini-1.5-pro" -p "סכם את השינויים הבאים בקצרה ובבהירות עבור סוקר קוד. הדגש שינויים חשובים, מחיקות והוספות עיקריות:" > summary.txt
+          cat changes.diff | gemini --model="gemini-2.0-flash-lite" -p "סכם את השינויים הבאים בקצרה ובבהירות עבור סוקר קוד. הדגש שינויים חשובים, מחיקות והוספות עיקריות:" > summary.txt
 
       - name: Post summary as PR comment
         uses: marocchino/sticky-pull-request-comment@v2
