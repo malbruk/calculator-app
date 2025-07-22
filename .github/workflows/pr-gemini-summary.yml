@@ -4,7 +4,8 @@ name: Gemini PR Summary
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize]
+  workflow_dispatch:  # מאפשר להריץ ידנית
 
 jobs:
   summarize-with-gemini:
