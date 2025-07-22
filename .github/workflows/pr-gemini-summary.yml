@@ -14,7 +14,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 2  # מאפשר לראות diff מול הענף הקודם
+          fetch-depth: 0  # חשוב כדי לקבל גישה לבסיס ה-branch
 
       - name: Install Node.js
         uses: actions/setup-node@v4
@@ -27,11 +27,14 @@ jobs:
       - name: Export Gemini API Key
         run: echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> $GITHUB_ENV
 
-      - name: Generate diff summary
-        id: summarize
+      - name: Generate full PR diff
         run: |
-          git diff HEAD^ HEAD > changes.diff
-          gemini "סכם את השינויים הבאים בקצרה ובבהירות עבור סוקר קוד. הדגש שינויים חשובים, מחיקות והוספות עיקריות:" file:changes.diff > summary.txt
+          git fetch origin ${{ github.event.pull_request.base.ref }}
+          git diff origin/${{ github.event.pull_request.base.ref }}...HEAD > changes.diff
+
+      - name: Summarize diff using Gemini
+        run: |
+          cat changes.diff | gemini -p "סכם את השינויים הבאים בקצרה ובבהירות עבור סוקר קוד. הדגש שינויים חשובים, מחיקות והוספות עיקריות:" > summary.txt
 
       - name: Post summary as PR comment
         uses: marocchino/sticky-pull-request-comment@v2
