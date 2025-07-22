@@ -1,0 +1,40 @@
+# .github/workflows/gemini-pr-summary.yml
+
+name: Gemini PR Summary
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  summarize-with-gemini:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2  # מאפשר לראות diff מול הענף הקודם
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Gemini CLI
+        run: npm install -g @google/gemini-cli
+
+      - name: Export Gemini API Key
+        run: echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> $GITHUB_ENV
+
+      - name: Generate diff summary
+        id: summarize
+        run: |
+          git diff HEAD^ HEAD > changes.diff
+          gemini "סכם את השינויים הבאים בקצרה ובבהירות עבור סוקר קוד. הדגש שינויים חשובים, מחיקות והוספות עיקריות:" file:changes.diff > summary.txt
+
+      - name: Post summary as PR comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: gemini-summary
+          path: summary.txt
